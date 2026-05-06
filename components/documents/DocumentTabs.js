@@ -26,7 +26,7 @@ export default function DocumentUploader({
   return (
     <div>
       {/* 🔹 Upload Area */}
-      <div
+      {/* <div
         style={{
           border: "2px dashed #ccc",
           padding: "2rem",
@@ -50,27 +50,29 @@ export default function DocumentUploader({
           onChange={handleFileSelect}
           accept=".pdf,.jpg,.png"
          required/>
-      </div>
+      </div> */}
 
       {/* 🔹 File List */}
       {docs.map((doc, index) => (
         <Card key={index} style={{ marginBottom: "1rem" }}>
           <CardContent>
-            <TextField
+            {/* <l1
               label="Document Name"
               value={doc.name}
               onChange={(e) =>
                 onDocChange(index, "name", e.target.value)
               }
               fullWidth
-            />
+            /> */}
+
+            <Typography variant="subtitle1">{doc.name}</Typography>
 
             <div style={{ marginTop: "0.75rem" }}>
               <Typography variant="body2">
                 {doc.file?.name || "No file selected"}
               </Typography>
             </div>
-
+              
             <div style={{ marginTop: "1rem" }}>
               <Button
                 variant="contained"
@@ -87,14 +89,14 @@ export default function DocumentUploader({
                 />
               </Button>
 
-              <Button
+              {/* <Button
                 onClick={() => onRemoveDoc(index)}
                 startIcon={<DeleteIcon />}
                 color="error"
                 style={{ marginLeft: "1rem" }}
               >
-                Remove
-              </Button>
+                Remove  
+              </Button> */}
             </div>
           </CardContent>
         </Card>

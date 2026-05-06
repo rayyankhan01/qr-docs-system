@@ -9,8 +9,6 @@ export default async function machinePage({params}){
     return (
         <div>
             <h1>{machine.name}</h1>
-            <p><strong>Location:</strong> {machine.location}</p>
-            <p><strong>Description:</strong> {machine.description}</p>
             <h2>Documents</h2>
             <ul>
                 {docs.map((doc)=>(

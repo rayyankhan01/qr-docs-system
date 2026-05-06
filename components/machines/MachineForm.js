@@ -9,8 +9,11 @@ import Container from '@mui/material/Container';
 
 export default function MachineForm(){
 
-    const [form,setForm] = useState({name:'',location: '', description:'',})
-    const [docs, setDocs] = useState([{ name: '', file: null }])
+    const [form,setForm] = useState({name:''})
+    const [docs, setDocs] = useState([
+    { name: 'Vehicle Registration', file: null },
+    { name: 'Insurance', file: null }
+])
     const [loading,setLoading]= useState(false)
     const [message,setMessage] = useState('')
     
@@ -26,13 +29,13 @@ export default function MachineForm(){
         setDocs(updated)
     }
     
-    const addDocRows =(newDocs)=>{
-        setDocs([...docs,...newDocs])
-    }
+    // const addDocRows =(newDocs)=>{
+    //     setDocs([...docs,...newDocs])
+    // }
 
-    const removeDocRow = (index)=>{
-        setDocs(docs.filter((_,i)=>i!==index))
-    }
+    // const removeDocRow = (index)=>{
+    //     setDocs(docs.filter((_,i)=>i!==index))
+    // }
 
     const handleSubmit = async(e)=>{
         e.preventDefault()
@@ -113,30 +116,30 @@ export default function MachineForm(){
                                 fullWidth
                                 />
 
-                                <TextField
+                                {/* <TextField
                                 name="location"
                                 label="Location"
                                 value={form.location}
                                 onChange={handleFormChange}
                                 fullWidth
-                                />
+                                /> */}
 
-                                <TextField
+                                {/* <TextField
                                 name="description"
                                 label="Description"
                                 value={form.description}
                                 onChange={handleFormChange}
                                 fullWidth
-                                />
+                                /> */}  
+                    <h3>Documents</h3>
+                    <DocumentTabs   docs={docs} 
+                                    onDocChange={handleDocChange}
+                                   />
 
                 </Box>
                                         
 
-                <h3>Documents</h3>
-                    <DocumentTabs   docs={docs} 
-                                    onDocChange={handleDocChange}
-                                    onAddDocs={addDocRows}
-                                    onRemoveDoc={removeDocRow}/>
+              
 
             <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} disabled={loading} sx={{ mt: 2 }}>
                 {loading ? 'Saving...' : 'Save Machine'}
