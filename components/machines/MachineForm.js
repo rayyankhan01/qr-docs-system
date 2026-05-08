@@ -12,8 +12,9 @@ export default function MachineForm(){
     const [form,setForm] = useState({name:''})
     const [docs, setDocs] = useState([
     { name: 'Vehicle Registration', file: null },
-    { name: 'Insurance', file: null }
-])
+    { name: 'Insurance', file: null },
+    {name: "Third Party Certificate", file: null}
+    ])
     const [loading,setLoading]= useState(false)
     const [message,setMessage] = useState('')
     
@@ -88,11 +89,13 @@ export default function MachineForm(){
             }])
 
             setMessage('Machine and documents saved !')
-            setForm({name : '', location:'', description:''})
-            setDocs([{name : '', file :null}])
+            setForm({name : ''})
+            setDocs([{ name: 'Vehicle Registration', file: null },
+                     { name: 'Insurance', file: null }, 
+                     {name: "Third Party Certificate", file: null}])
             setLoading(false)
         }
-        setForm({name : '', location:'', description:''})
+        setForm({name : ''})
         setLoading(false)
     }   
 

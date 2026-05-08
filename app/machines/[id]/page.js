@@ -13,6 +13,7 @@ export default async function machinePage({params}){
             <ul>
                 {docs.map((doc)=>(
                     <li key={doc.id}>
+                           {/* <strong>{doc.name}:</strong>{' '} */}
                         <Link href={doc.file_url} target="_blank">{doc.name}</Link>
                     </li>
                 ))}
