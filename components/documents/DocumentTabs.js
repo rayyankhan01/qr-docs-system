@@ -23,6 +23,8 @@ export default function DocumentUploader({
     onAddDocs(newDocs);
   };
 
+  //const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png']
+
   return (
     <div>
               {/* 🔹 Upload Area */}
@@ -72,7 +74,7 @@ export default function DocumentUploader({
                         {doc.file?.name || "No file selected"}
                       </Typography>
                     </div>
-                      
+                      {/*take file input, with accepted types only*/}
                     <div style={{ marginTop: "1rem" }}>
                       <Button
                         variant="contained"
@@ -83,10 +85,11 @@ export default function DocumentUploader({
                         <input
                           type="file"
                           hidden
+                          accept=".pdf,.jpg,.png"
                           onChange={(e) =>
                             onDocChange(index, "file", e.target.files[0])
                           }
-                        />
+                        />  
                       </Button>
 
                       {/* <Button
