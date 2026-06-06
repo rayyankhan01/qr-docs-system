@@ -1,12 +1,5 @@
-import { supabase } from '../lib/supabase'
+import { redirect } from 'next/navigation'
 
-export default async function Home() {
-  const { data, error } = await supabase.from('machines').select('*')
-
-  return (
-    <main>
-      <h1>QR Docs System</h1>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-    </main>
-  )
+export default function Home() {
+    redirect('/login')
 }

@@ -3,6 +3,7 @@
 // import { useState } from 'react'
 import { createClient } from '@/lib/supabaseServ'
 import { redirect } from 'next/navigation'
+import DashboardLayout from '@/components/layout/DashboardLayout'
 
 export default async function DashboardPage(){
     const supabase = await createClient()
@@ -14,7 +15,8 @@ export default async function DashboardPage(){
     const { data: profile } = await supabase.from('profiles').select('role').eq('id',user.id).single()
 
     return (
-        <div>
+        <div>  
+              {/* <DashboardLayout role={profile?.role}></DashboardLayout> */}
             <h1>Dashboard</h1>
             <p>Welcome to the dashboard! Please select a section from the menu.</p>
             <p>Your role: {profile?.role}</p>
@@ -32,7 +34,8 @@ export default async function DashboardPage(){
                 <p>Add and view machines</p>
             </div>
         )}
-
+   
         </div>
+ 
     )
 }
