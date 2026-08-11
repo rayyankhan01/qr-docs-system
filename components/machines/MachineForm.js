@@ -2,22 +2,22 @@
 
 import DocumentTabs from '../documents/DocumentTabs'
 import { supabase } from '@/lib/supabase'
-import { TextField, Button, Box } from '@mui/material'
+import { TextField, Button, Box, Alert } from '@mui/material'
 import { useState } from 'react'
 
 import Container from '@mui/material/Container';
-
+   const blankDocs = () => [
+    { name: 'Vehicle Registration', file: null },
+    { name: 'Insurance', file: null },
+    { name: 'Third Party Certificate', file: null },
+]
 export default function MachineForm(){
 
     const [form,setForm] = useState({name:''})
-    const [docs, setDocs] = useState([
-    { name: 'Vehicle Registration', file: null },
-    { name: 'Insurance', file: null },
-    {name: "Third Party Certificate", file: null}
-    ])
+    const [docs, setDocs] = useState(blankDocs())
     const [loading,setLoading]= useState(false)
-    const [message,setMessage] = useState('')
-    
+    const [message,setMessage] = useState(null)
+    // const [isError,setIsError] = useState(false)
 
     const handleFormChange =(e)=>{
             setForm({...form,[e.target.name]:e.target.value})
@@ -25,10 +25,13 @@ export default function MachineForm(){
 
 
     const handleDocChange = (index,field,value)=>{
-        const updated= [...docs]
-        updated[index][field]=value
-        setDocs(updated)
+        //const updated= [...docs]
+        //updated[index][field]=value // this makes a shallow copy
+        //setDocs(updated)
+        setDocs(docs.map((doc,i)=> i === index ? {...doc,[field]:value}:doc))
     }
+
+ 
     
     // const addDocRows =(newDocs)=>{
     //     setDocs([...docs,...newDocs])
@@ -42,21 +45,21 @@ export default function MachineForm(){
         e.preventDefault()
         setLoading(true)
         if (!form.name) {
-        setMessage('Machine name is required')
+        setMessage({text:'Machine name is required', type:'error'})
         setLoading(false)
         return
             }
 
-            const docsWithoutFiles = docs.filter(doc => !doc.file)
+        const docsWithoutFiles = docs.filter(doc => !doc.file)
             if (docsWithoutFiles.length > 0) {
-                setMessage('Please attach a file to all documents')
+                setMessage({text:'Please attach a file to all documents', type:'error'})
                 setLoading(false)
                 return
             }
         const {data:machine, error :machineError} = await supabase.from('machines').insert([form]).select().single()
 
         if(machineError){
-                setMessage('Error saving machine'+ machineError.message)
+                setMessage({text:'Error saving machine : '+ machineError.message,type:'error'})
                 setLoading(false)
                 return
         }
@@ -69,33 +72,48 @@ export default function MachineForm(){
             const {error : uploadError} = await supabase.storage.from('documents').upload(filePath,doc.file)
 
             if(uploadError){
-                setMessage('Error Uploading File '+ uploadError.message)
+                setMessage({text:'Error uploading document : ' + uploadError.message,type:'error'})
                 setLoading(false)
                 return
             }
 
             const {data :urlData} = supabase.storage.from('documents').getPublicUrl(filePath)
-            const docsWithoutFiles = docs.filter(doc => !doc.file)
-            if (docsWithoutFiles.length > 0) {
-                setMessage('Please attach a file to all documents')
-                setLoading(false)
-                return
-            }
-            await supabase.from('documents').insert([{
+            // const docsWithoutFiles = docs.filter(doc => !doc.file)
+            // if (docsWithoutFiles.length > 0) {
+            //     setMessage('Please attach a file to all documents')
+            //     setLoading(false)
+            //     return
+            // }
+            const {error:docError}= await supabase.from('documents').insert([{
                 machine_id:machine.id,
                 name:doc.name,
                 file_url:urlData.publicUrl,
                 file_type: doc.file.type
             }])
 
-            setMessage('Machine and documents saved !')
-            setForm({name : ''})
-            setDocs([{ name: 'Vehicle Registration', file: null },
-                     { name: 'Insurance', file: null }, 
-                     {name: "Third Party Certificate", file: null}])
-            setLoading(false)
+            if(docError){
+                setMessage({text:'Error saving document : '+docError.message,type:'error'})
+                setLoading(false)
+                return
+            }
+
+            // await supabase.from('documents').insert([{
+            //     machine_id:machine.id,
+            //     name:doc.name,
+            //     file_url:urlData.publicUrl,
+            //     file_type: doc.file.type
+            // }])
+
+            // setMessage('Machine and documents saved !')
+            // setForm({name : ''})
+            // setDocs([{ name: 'Vehicle Registration', file: null },
+            //          { name: 'Insurance', file: null }, 
+            //          {name: "Third Party Certificate", file: null}])
+            // setLoading(false)
         }
+        setMessage({text:'Machine and documents saved !', type:'success'})
         setForm({name : ''})
+        setDocs(blankDocs())
         setLoading(false)
     }   
 
@@ -147,8 +165,12 @@ export default function MachineForm(){
             <Button type="submit" variant="contained" color="primary" onClick={handleSubmit} disabled={loading} sx={{ mt: 2 }}>
                 {loading ? 'Saving...' : 'Save Machine'}
             </Button>
-             <p style={{marginTop:'1rem', color: message.includes('Error') ? 'red' : 'green'}}>{message}</p>
-        
+             {message && (
+                <Alert severity={message.type === 'error' ? 'error' : 'success'}>
+                    {message.text}
+                </Alert>
+                )}
+
             </form>  
                </Container>
         </main>

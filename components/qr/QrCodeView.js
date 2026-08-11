@@ -3,6 +3,7 @@
 import { supabase } from '@/lib/supabase'
 import { QRCodeSVG } from 'qrcode.react'
 import { Button } from '@mui/material'
+import { useRef } from 'react'
 export default function QrCodeView({id}){
 
     //const {id}= await params
@@ -10,9 +11,10 @@ export default function QrCodeView({id}){
     //if (!machine) return <div>Machine not found</div>
     const url = `http://localhost:3000/machines/${id}`
     const testurl = `http://172.16.20.46:3000/machines/${id}`
-
+     const qrRef = useRef(null)
     const handleDownload = () => {
-        const svg = document.querySelector('svg')
+    
+        const svg = qrRef.current.querySelector('svg')
         const svgData = new XMLSerializer().serializeToString(svg)
         const canvas = document.createElement('canvas')
         canvas.width = 450
@@ -31,7 +33,7 @@ export default function QrCodeView({id}){
     }
 
     return(
-        <div>
+        <div ref={qrRef}>
             <QRCodeSVG value={testurl} size={450}/>
             <Button variant="contained" onClick={handleDownload}>
                 Download QR Code
