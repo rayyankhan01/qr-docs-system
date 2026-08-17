@@ -9,9 +9,13 @@ export default function QrCodeView({id}){
     //const {id}= await params
     //const {data:machine}= await supabase.from('machines').select('*').eq('id',id).single()
     //if (!machine) return <div>Machine not found</div>
-    const url = `http://localhost:3000/machines/${id}`
-    const testurl = `http://172.16.20.46:3000/machines/${id}`
-     const qrRef = useRef(null)
+    //const url = `http://localhost:3000/machines/${id}`
+    //const testurl = `http://172.16.20.46:3000/machines/${id}`
+    // 
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const url = `${baseUrl}/machines/${id}`;
+    
+    const qrRef = useRef(null)
     const handleDownload = () => {
     
         const svg = qrRef.current.querySelector('svg')
@@ -34,7 +38,7 @@ export default function QrCodeView({id}){
 
     return(
         <div ref={qrRef}>
-            <QRCodeSVG value={testurl} size={450}/>
+            <QRCodeSVG value={url} size={450}/>
             <Button variant="contained" onClick={handleDownload}>
                 Download QR Code
             </Button>

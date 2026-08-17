@@ -20,13 +20,13 @@ export default function DashboardLayout({ children }) {
 
     return (
         <Box sx={{ display: 'flex' }}>
-            <AppBar position="fixed" sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}>
+            <AppBar position="fixed" >  {/*sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}*/}
                 <Toolbar>
-                    <Typography variant="h6" fontWeight="bold" sx={{ color: '#C9A84C' }}>
+                    <Typography variant="h4" fontWeight="bold" sx={{ color: 'gold.400' }}> {/*sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}*/}
                         Seven Spikes
                     </Typography>
-                    <Typography variant="body2" sx={{ ml: 1, color: 'white' }}>
-                        QR Docs
+                    <Typography variant="body2" sx={{ ml: 1}}>
+                        QR Code Management System
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -37,13 +37,13 @@ export default function DashboardLayout({ children }) {
                     width: drawerWidth,
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
-                        bgcolor: '#1a1a1a',
-                        color: 'white',
+                        // bgcolor: '#1a1a1a',
+                        // color: 'white',
                         mt: '64px',
                     }
                 }}
             >
-                <Divider sx={{ borderColor: '#333' }} />
+                <Divider sx={{ borderColor: 'sidebar.border' }} />
                 <List sx={{ mt: 1 }}>
                     {navLinks.map((link) => {
                         const active = pathname === link.href
@@ -52,16 +52,17 @@ export default function DashboardLayout({ children }) {
                                 key={link.label}
                                 component={Link}
                                 href={link.href}
-                                sx={{
-                                    mx: 1,
-                                    borderRadius: 2,
-                                    mb: 0.5,
-                                    bgcolor: active ? '#C9A84C' : 'transparent',
-                                    color: active ? '#1a1a1a' : 'white',
-                                    '&:hover': {
-                                        bgcolor: active ? '#C9A84C' : '#333',
-                                    }
-                                }}
+                                selected={active}
+                                // sx={{
+                                //     mx: 1,
+                                //     borderRadius: 2,
+                                //     mb: 0.5,
+                                //     //bgcolor: active ? '#C9A84C' : 'transparent',
+                                //     //color: active ? '#1a1a1a' : 'white',
+                                //     '&:hover': {
+                                //         bgcolor: active ? '#C9A84C' : '#333',
+                                //     }
+                                // }}
                             >
                                 <ListItemIcon sx={{ color: active ? '#1a1a1a' : '#C9A84C', minWidth: 40 }}>
                                     <link.icon />
@@ -73,7 +74,7 @@ export default function DashboardLayout({ children }) {
                 </List>
             </Drawer>
 
-            <Box component="main" sx={{ flexGrow: 1, p: 3, bgcolor: '#f5f5f5', minHeight: '100vh', ml: `${drawerWidth}px` }}>
+            <Box component="main" sx={{ flexGrow: 1, p: 3, minHeight: '100vh'}}>
                 <Toolbar />
                 {children}
             </Box>

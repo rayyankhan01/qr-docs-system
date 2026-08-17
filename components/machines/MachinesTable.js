@@ -28,12 +28,12 @@ function ActionsCell({ id }) {
             <IconButton size="small" onClick={() => router.push(`/machines/${id}/manage`)}>
                 <VisibilityIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small" onClick={() => router.push(`/machines/${id}/edit`)}>
+            <IconButton size="small" onClick={(e) => { e.stopPropagation(); router.push(`/machines/${id}/edit`); }}>
                 <EditIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small" color="error" onClick={() => handleDelete(id)}>
+            {/* <IconButton size="small" color="error" onClick={() => handleDelete(id)}>
                 <DeleteIcon fontSize="small" />
-            </IconButton>
+            </IconButton> */}
         </Box>
     )
 }

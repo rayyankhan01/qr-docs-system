@@ -1,8 +1,9 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabaseServ'
 import ManageMachineView from '@/components/machines/ManageMachineView'
 
 export default async function ManageMachinePage({ params }) {
     const { id } = await params
+    const supabase = await createClient()
     const { data: machine } = await supabase.from('machines').select('*').eq('id', id).single()
     const { data: docs, error : docsError } = await supabase.from('documents').select('*').eq('machine_id', id)
 
