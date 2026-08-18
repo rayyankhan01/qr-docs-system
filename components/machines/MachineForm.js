@@ -7,9 +7,9 @@ import { useState } from 'react'
 
 import Container from '@mui/material/Container';
    const blankDocs = () => [
-    { name: 'Vehicle Registration', file: null },
-    { name: 'Insurance', file: null },
-    { name: 'Third Party Certificate', file: null },
+    { name: 'Vehicle Registration', file: null , expiry_date:''},
+    { name: 'Insurance', file: null, expiry_date:'' },
+    { name: 'Third Party Certificate', file: null , expiry_date:''},
 ]
 export default function MachineForm(){
 
@@ -56,13 +56,19 @@ export default function MachineForm(){
                 setLoading(false)
                 return
             }
+        const docsWithoutExpiry = docs.filter(doc => !doc.expiry_date)
+        if (docsWithoutExpiry.length > 0) {
+            setMessage({text:'Please provide an expiry date for all documents', type:'error'})
+            setLoading(false)
+            return
+        }
         const {data:machine, error :machineError} = await supabase.from('machines').insert([form]).select().single()
-
         if(machineError){
                 setMessage({text:'Error saving machine : '+ machineError.message,type:'error'})
                 setLoading(false)
                 return
         }
+        
 
         for (const doc of docs){
             if (!doc.file) continue
@@ -88,7 +94,8 @@ export default function MachineForm(){
                 machine_id:machine.id,
                 name:doc.name,
                 file_url:urlData.publicUrl,
-                file_type: doc.file.type
+                file_type: doc.file.type,
+                expiry_date: doc.expiry_date
             }])
 
             if(docError){

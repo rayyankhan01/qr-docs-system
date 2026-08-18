@@ -58,24 +58,17 @@ export default function DocumentUploader({
               {docs.map((doc, index) => (
                 <Card key={index} style={{ marginBottom: "1rem" }}>
                   <CardContent>
-                    {/* <l1
-                      label="Document Name"
-                      value={doc.name}
-                      onChange={(e) =>
-                        onDocChange(index, "name", e.target.value)
-                      }
-                      fullWidth
-                    /> */}
+                 
 
                     <Typography variant="subtitle1">{doc.name}</Typography>
 
                     <div style={{ marginTop: "0.75rem" }}>
-                      <Typography variant="body2">
-                        {doc.file?.name || "No file selected"}
-                      </Typography>
+                        <Typography variant="body2">
+                          {doc.file?.name || "No file selected"}
+                        </Typography>
                     </div>
                       {/*take file input, with accepted types only*/}
-                    <div style={{ marginTop: "1rem" }}>
+                    <div style={{ marginTop: "1rem" , display: "flex", alignItems: "center", gap: "1rem" }}>
                       <Button
                         variant="contained"
                         component="label"
@@ -89,17 +82,25 @@ export default function DocumentUploader({
                           onChange={(e) =>
                             onDocChange(index, "file", e.target.files[0])
                           }
+                    
                         />  
-                      </Button>
 
-                      {/* <Button
-                        onClick={() => onRemoveDoc(index)}
-                        startIcon={<DeleteIcon />}
-                        color="error"
-                        style={{ marginLeft: "1rem" }}
-                      >
-                        Remove  
-                      </Button> */}
+                      
+                      </Button>
+               
+                      <TextField
+                          label = "Expiry Date"
+                          type="date"
+                          size = 'small'
+                          value={doc.expiry_date || ""}
+                          onChange={(e) =>
+                            onDocChange(index, "expiry_date", e.target.value)
+                          }
+                          slotProps={{inputLabel :{shrink: true}}}
+                          required
+                      />
+                     
+                 
                     </div>
                   </CardContent>
                 </Card>
@@ -107,3 +108,22 @@ export default function DocumentUploader({
     </div>
   );
 }
+
+
+   {/* <l1
+                      label="Document Name"
+                      value={doc.name}
+                      onChange={(e) =>
+                        onDocChange(index, "name", e.target.value)
+                      }
+                      fullWidth
+                    /> */}
+
+     {/* <Button
+                        onClick={() => onRemoveDoc(index)}
+                        startIcon={<DeleteIcon />}
+                        color="error"
+                        style={{ marginLeft: "1rem" }}
+                      >
+                        Remove  
+                      </Button> */}
