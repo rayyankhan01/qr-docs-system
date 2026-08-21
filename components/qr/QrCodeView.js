@@ -37,9 +37,9 @@ export default function QrCodeView({id}){
     }
 
     return(
-        <div ref={qrRef}>
+        <div ref={qrRef} style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
             <QRCodeSVG value={url} size={450}/>
-            <Button variant="contained" onClick={handleDownload}>
+            <Button variant="contained" onClick={handleDownload} sx = {{mt:2}}>
                 Download QR Code
             </Button>
         </div>
