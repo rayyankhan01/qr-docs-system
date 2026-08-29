@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Drawer, List, AppBar, Toolbar, Typography, Box, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material'
 import DashboardIcon from '@mui/icons-material/Dashboard'
+import { useRouter } from 'next/navigation'
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing'
 import GroupIcon from '@mui/icons-material/Group'
 
@@ -17,12 +18,12 @@ const navLinks = [
 
 export default function DashboardLayout({ children }) {
     const pathname = usePathname()
-
+    const router = useRouter()
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" >  {/*sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}*/}
                 <Toolbar>
-                    <Typography variant="h4" fontWeight="bold" sx={{ color: 'gold.400' }}> {/*sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}*/}
+                    <Typography variant="h4" fontWeight="bold" sx={{ color: 'gold.400' }} onClick={() => router.push('/dashboard')}>
                         Seven Spikes
                     </Typography>
                     <Typography variant="body2" sx={{ ml: 1}}>
