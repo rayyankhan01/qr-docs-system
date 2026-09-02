@@ -4,12 +4,20 @@ import QrCodeView from "@/components/qr/QrCodeView"
 import { useState } from "react";
 import { Typography, Dialog, DialogContent, DialogTitle, DialogActions } from "@mui/material";
 import Link from "next/link";
-import {Button} from "@mui/material";
+import {Button, Box, List, ListItem, ListItemText} from "@mui/material";
+import LinkListItem from "@/components/ui/LinkListItem";
+import { Stack } from "@mui/material";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";  
+import { PageHeader, SectionCard,StatusChip  } from "../ui";
+import { getExpiryStatus } from "@/lib/expiry";
+
+
+
 export default function ManageMachineView({ machine, docs }) {
     const [qrOpen,setqrOpen]=useState(false); 
     const [openDelete,setdeleteOpen]=useState(false); 
+    const [editOpen,seteditOpen]=useState(false);
     const router = useRouter();
     const handleDelete = async () => {
         // Call your API to delete the machine
@@ -38,56 +46,107 @@ export default function ManageMachineView({ machine, docs }) {
 
     return(
        
-        <div>
-        <Typography variant="h1">{machine.name}</Typography>
-            <Typography variant="h3" sx = {{mt:2}}>
-                Documents
-            </Typography>
-          <ul>
-                {docs.map((doc) => (
-                    <li key={doc.id}>
-                        <Typography variant="body1">
-                            <strong>{doc.name}:</strong>{' '}
-                            <Link href={doc.file_url} target="_blank">View</Link>{' '}
-                            - Expiration Date: {new Date(doc.expiry_date).toLocaleDateString()}
-                        </Typography>
-                    </li>
-                ))}
-            </ul>
-                    {/* <Button onClick={()=>setqrOpen(true)} variant="contained">
-                    Generate QR Code
-                    </Button> */}
-                    {/* <Dialog open={qrOpen} onClose={()=>setqrOpen(false)}>
-                    {/* <QrCodeView value={JSON.stringify({machineId:machine.id})} docs={docs}/> */}
-                    {/* <QrCodeView id={machine.id}/> */} 
-                    {/* </Dialog> */}
-        <Button variant="contained" sx={{ml:2}} onClick={()=>setqrOpen(true)}>
-            View QR Code
-        </Button>
-                <Dialog open={qrOpen} onClose={()=>setqrOpen(false)}>
-                    {/* <QrCodeView value={JSON.stringify({machineId:machine.id})} docs={docs}/> */}
-                    <DialogTitle>QR Code for {machine.name} </DialogTitle>
-                        <DialogContent sx={{ display:'flex', justifyContent:'center'}}>
-                            <QrCodeView id={machine.id}/>
-                        </DialogContent>
-                </Dialog>
-        <Button variant="contained" color="error" sx={{ml:2}} onClick={()=>setdeleteOpen(true)}>
-            Delete Machine
-        </Button>
-            <Dialog open={openDelete} onClose={()=>setdeleteOpen(false)}>
-                    <DialogTitle>
-                    Delete Machine ID: {machine.name} ?
-                    </DialogTitle>
-                    <DialogContent>
-                            Are you sure you want to delete the machine "{machine.name}"? This action cannot be undone.
-                    </DialogContent>
-                   <DialogActions>
-                        <Button variant="contained" onClick = {handleDelete} color="error" >
-                        Confirm Delete
-                        </Button>
-                   </DialogActions>
+        // <div>
+        // <Typography variant="h1">{machine.name}</Typography>
+        //     <Typography variant="h3" sx = {{mt:2}}>
+        //         Documents
+        //     </Typography>
+        //   <ul>
+        //         {docs.map((doc) => (
+        //             <li key={doc.id}>
+        //                 <Typography variant="body1">
+        //                     <strong>{doc.name}:</strong>{' '}
+        //                     <Link href={doc.file_url} target="_blank">View</Link>{' '}
+        //                     - Expiration Date: {new Date(doc.expiry_date).toLocaleDateString()}
+        //                 </Typography>
+        //             </li>
+        //         ))}
+        //     </ul>
+        //             {/* <Button onClick={()=>setqrOpen(true)} variant="contained">
+        //             Generate QR Code
+        //             </Button> */}
+        //             {/* <Dialog open={qrOpen} onClose={()=>setqrOpen(false)}>
+        //             {/* <QrCodeView value={JSON.stringify({machineId:machine.id})} docs={docs}/> */}
+        //             {/* <QrCodeView id={machine.id}/> */} 
+        //             {/* </Dialog> */}
+        // <Button variant="contained" sx={{ml:2}} onClick={()=>setqrOpen(true)}>
+        //     View QR Code
+        // </Button>
+        //         <Dialog open={qrOpen} onClose={()=>setqrOpen(false)}>
+        //             {/* <QrCodeView value={JSON.stringify({machineId:machine.id})} docs={docs}/> */}
+        //             <DialogTitle>QR Code for {machine.name} </DialogTitle>
+        //                 <DialogContent sx={{ display:'flex', justifyContent:'center'}}>
+        //                     <QrCodeView id={machine.id}/>
+        //                 </DialogContent>
+        //         </Dialog>
+        // <Button variant="contained" color="error" sx={{ml:2}} onClick={()=>setdeleteOpen(true)}>
+        //     Delete Machine
+        // </Button>
+        //     <Dialog open={openDelete} onClose={()=>setdeleteOpen(false)}>
+        //             <DialogTitle>
+        //             Delete Machine ID: {machine.name} ?
+        //             </DialogTitle>
+        //             <DialogContent>
+        //                     Are you sure you want to delete the machine "{machine.name}"? This action cannot be undone.
+        //             </DialogContent>
+        //            <DialogActions>
+        //                 <Button variant="contained" onClick = {handleDelete} color="error" >
+        //                 Confirm Delete
+        //                 </Button>
+        //            </DialogActions>
                        
-            </Dialog>
+        //     </Dialog>
 
-        </div>
+        // </div>
+
+        <Box    sx = {{maxWidth: 800, marginLeft: '4rem'}}>
+            <PageHeader
+            title="Manage Machine"
+            description={`Manage documents and details for ${machine.name}`}
+                 />
+            <SectionCard>
+                <List disablePadding>
+                    {docs.map((doc) => (
+                        <LinkListItem key={doc.id} href={doc.file_url} target ="_blank" disablePadding sx={{py:1}}>
+                            <ListItemText primary={doc.name} secondary={`Expires : ${new Date(doc.expiry_date).toLocaleDateString()}`} />
+                            <StatusChip status={getExpiryStatus(doc.expiry_date)} />
+                        </LinkListItem>
+                    ))}
+     
+                </List>
+            </SectionCard>
+
+            <Stack direction="row" spacing={2} sx={{mt:2}}>
+                <Button variant ="contained" onClick={()=>setqrOpen(true)}>
+                    View QR Code
+                </Button>
+                <Button variant="contained" onClick={()=>router.push(`/machines/${machine.id}/edit`)}>
+                    Edit Machine
+                </Button>
+                <Button variant ="contained" color="error" onClick={()=>setdeleteOpen(true)}>
+                    Delete Machine
+                </Button>
+            </Stack>
+
+            <Dialog open = {qrOpen} onClose={()=>setqrOpen(false)}>
+                <DialogTitle>QR Code for {machine.name}</DialogTitle>
+                    <DialogContent sx={{display:'flex', justifyContent:'center'}}>
+                        <QrCodeView id={machine.id}/>
+                    </DialogContent>
+            </Dialog>
+            <Dialog open={openDelete} onClose={()=>setdeleteOpen(false)}>
+                <DialogTitle>
+                    Delete Machine ID: {machine.name} ? 
+                </DialogTitle>
+                <DialogContent>
+                    Are you sure you want to delete the machine "{machine.name}"? This action cannot be undone.
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" onClick={handleDelete} color="error">
+                        Confirm Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        </Box>
+  
     )}

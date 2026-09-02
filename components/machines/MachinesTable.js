@@ -47,6 +47,8 @@ export default function MachinesTable({ machines }) {
             pageSize={10}
             rowsPerPageOptions={[10, 25, 50]}
             onRowClick={(params) => router.push(`/machines/${params.id}/manage`)}
+            disableColumnResize
+            disableColumnReorder
             sx={{ cursor: 'pointer' }}
         />
     )

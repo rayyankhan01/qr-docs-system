@@ -9,6 +9,7 @@ export default function DocumentUploader({
   onDocChange,
   onAddDocs,
   onRemoveDoc,
+  requireFields = true,
 }) {
   const fileInputRef = useRef();
 
@@ -22,6 +23,7 @@ export default function DocumentUploader({
 
     onAddDocs(newDocs);
   };
+
 
   //const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png']
 
@@ -97,7 +99,7 @@ export default function DocumentUploader({
                             onDocChange(index, "expiry_date", e.target.value)
                           }
                           slotProps={{inputLabel :{shrink: true}}}
-                          required
+                          required = {requireFields} // done so that the user can bypass current set up where each document is required to be input
                       />
                      
                  

@@ -6,14 +6,15 @@ import { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import  DocumentTabs  from '@/components/documents/DocumentTabs';
 import Alert from '@mui/material/Alert';
-
+import { SectionCard } from '../ui';
+import { Container, Stack, Box} from '@mui/material';
+import PageHeader from '../ui/PageHeader';
 export default function EditMachineView({ machine, docs }) {
 
     const [name, setName] = useState(machine.name);
     const [newDocs, setNewDocs] = useState(docs.map(doc => ({ ...doc, file: null })) );   
     const [message,setMessage] = useState('')
     // const DOCUMENT_TYPES =['Vehicle Registration','Insurance','Third Party Certificate']
-
     // const [docsState, setDocsState] = useState(docs.map(doc => ({...doc,file:null})));
 
 
@@ -65,21 +66,53 @@ export default function EditMachineView({ machine, docs }) {
 
 
     return(
-        <div>
-            <h1>Edit Machine</h1>
-            <TextField label="Machine Name" value={name} onChange={(e) => setName(e.target.value)} />
+        // <div>
+        //     <h1>Edit Machine</h1>
+        //     <TextField label="Machine Name" value={name} onChange={(e) => setName(e.target.value)} />
 
 
-            <Button variant="contained" onClick={handleSaveName}>
-                Save
-            </Button>
-            {message && <Alert severity={message.type === 'success' ? 'success' : 'error'}>{message.text}</Alert>}
+        //     <Button variant="contained" onClick={handleSaveName}>
+        //         Save
+        //     </Button>
+        //     {message && <Alert severity={message.type === 'success' ? 'success' : 'error'}>{message.text}</Alert>}
 
-            <h2>Documents</h2>
-            <DocumentTabs docs={newDocs}onDocChange={handleDocChange}></DocumentTabs>
-            <Button variant="contained" onClick={handleSaveDocs} style={{ marginTop: "1rem", marginLeft: "1rem" }}>
-                Save Documents
-            </Button>
-        </div>
+        //     <h2>Documents</h2>
+        //     <DocumentTabs docs={newDocs}onDocChange={handleDocChange} requireFields={false}></DocumentTabs>
+        //     <Button variant="contained" onClick={handleSaveDocs} style={{ marginTop: "1rem", marginLeft: "1rem" }}>
+        //         Save Documents
+        //     </Button>
+        // </div>
+    <Box sx ={{maxWidth: 800, marginLeft: '4rem'}}> 
+        <PageHeader
+            title="Edit Machine "
+            description={`Edit machine details and documents for ${machine.name}`}
+            size="large"
+        />
+        { message && <Alert severity={message.type === 'success' ? 'success' : 'error'} sx={{ mb: 2 }}>{message.text}</Alert>   }
+        <Stack spacing = {3}>
+            <SectionCard title="Machine Details">
+                <Stack direction="row" spacing={2}>
+                    <TextField
+                        label = "Machine Name"
+                        value = {name}
+                        onChange = {(e) => setName(e.target.value)}
+                    />
+                    <Button variant="contained" onClick={handleSaveName}>
+                        Save
+                    </Button>
+                </Stack>
+            </SectionCard>
+
+            <SectionCard title ='Documents' >
+                <DocumentTabs docs ={newDocs} onDocChange={handleDocChange} requireFields ={false}></DocumentTabs>  
+                <Button variant="contained" onClick={handleSaveDocs} sx={{ mt: 2 }}>
+                    Save Documents
+                </Button>
+            </SectionCard>
+        </Stack>
+        
+    </Box>
+
+
     )
 }

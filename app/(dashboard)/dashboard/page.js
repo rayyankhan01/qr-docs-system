@@ -4,7 +4,7 @@
 import { createClient } from '@/lib/supabaseServ'
 import { redirect } from 'next/navigation'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-
+import { Box, Typography } from '@mui/material'
 import {EXPIRY_WARNING_DAYS, getExpiryStatus} from '@/lib/expiry'
 import AlertRangeSelect from '@/components/dashboard/AlertRangeSelect'
 import {StatusChip, SectionCard} from '@/components/ui'
@@ -55,26 +55,28 @@ export default async function DashboardPage({searchParams}){
 
         <SectionCard title='Document Alerts'>
             <AlertRangeSelect defaultDays={rangeDays}/>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Machine</TableCell>
-                            <TableCell>Document</TableCell>
-                            <TableCell>Expiry Date</TableCell>
-                            <TableCell>Status</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {alerts.map((doc)=> (
-                            <TableRow key={doc.id}>
-                                <TableCell>{doc.machines?.name}</TableCell>
-                                <TableCell>{doc.name}</TableCell>
-                                <TableCell>{new Date(doc.expiry_date).toLocaleDateString()}</TableCell>
-                                <TableCell><StatusChip status = {getExpiryStatus(doc.expiry_date,rangeDays)}/></TableCell>
+                <Box sx = {{maxHeight:400, overflowY:'auto'}}>
+                    <Table stickyHeader sx = {{tableLayout:'fixed'}}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Machine</TableCell>
+                                <TableCell>Document</TableCell>
+                                <TableCell>Expiry Date</TableCell>
+                                <TableCell>Status</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
+                        </TableHead>
+                        <TableBody>
+                            {alerts.map((doc)=> (
+                                <TableRow key={doc.id}>
+                                    <TableCell sx={{ width:'30%'}}>{doc.machines?.name}</TableCell>
+                                    <TableCell sx={{ width:'35%'}}>{doc.name}</TableCell>
+                                    <TableCell sx={{ width:'20%'}}>{new Date(doc.expiry_date).toLocaleDateString()}</TableCell>
+                                    <TableCell sx={{ width:'15%'}}><StatusChip status = {getExpiryStatus(doc.expiry_date,rangeDays)}/></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Box>   
         </SectionCard>
 
 
