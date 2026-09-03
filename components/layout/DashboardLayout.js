@@ -16,9 +16,10 @@ const navLinks = [
     { label: 'Staff', icon: GroupIcon, href: '/staff' },
 ]
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, isAdmin }) {
     const pathname = usePathname()
     const router = useRouter()
+    const visibleLinks = navLinks.filter(link=> link.href !== '/staff'||isAdmin)
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" >  {/*sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}*/}
@@ -46,7 +47,7 @@ export default function DashboardLayout({ children }) {
             >
                 <Divider sx={{ borderColor: 'sidebar.border' }} />
                 <List sx={{ mt: 1 }}>
-                    {navLinks.map((link) => {
+                    {visibleLinks.map((link) => {
                         const active = pathname === link.href
                         return (
                             <ListItemButton

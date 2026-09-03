@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation'
 import { Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem } from '@mui/material'
 import {supabase} from '@/lib/supabase'
 const ROLES = ['admin','staff']
-export default function StaffTable ({staff, isAdmin}) {
+export default function StaffTable ({staff, isSuperAdmin}) {
     const router = useRouter();
 
     const handleRoleChange = async (id,newRole)=>{
@@ -29,7 +29,7 @@ export default function StaffTable ({staff, isAdmin}) {
                     <TableRow key={person.id}>
                         <TableCell>{person.name}</TableCell>
                         <TableCell>
-                            {isAdmin ? (
+                            {isSuperAdmin ? (
                                 <Select value ={person.role} size="small" onChange={(e) => {handleRoleChange(person.id,e.target.value)}}>
                                         {ROLES.map((r) => (<MenuItem key={r} value={r}>
                                             {r}
