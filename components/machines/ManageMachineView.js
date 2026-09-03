@@ -14,7 +14,7 @@ import { getExpiryStatus } from "@/lib/expiry";
 
 
 
-export default function ManageMachineView({ machine, docs }) {
+export default function ManageMachineView({ machine, docs, isAdmin }) {
     const [qrOpen,setqrOpen]=useState(false); 
     const [openDelete,setdeleteOpen]=useState(false); 
     const [editOpen,seteditOpen]=useState(false);
@@ -123,9 +123,11 @@ export default function ManageMachineView({ machine, docs }) {
                 <Button variant="contained" onClick={()=>router.push(`/machines/${machine.id}/edit`)}>
                     Edit Machine
                 </Button>
-                <Button variant ="contained" color="error" onClick={()=>setdeleteOpen(true)}>
-                    Delete Machine
-                </Button>
+                {isAdmin && (
+                    <Button variant ="contained" color="error" onClick={()=>setdeleteOpen(true)}>
+                        Delete Machine
+                    </Button>
+                )}
             </Stack>
 
             <Dialog open = {qrOpen} onClose={()=>setqrOpen(false)}>
@@ -134,7 +136,8 @@ export default function ManageMachineView({ machine, docs }) {
                         <QrCodeView id={machine.id}/>
                     </DialogContent>
             </Dialog>
-            <Dialog open={openDelete} onClose={()=>setdeleteOpen(false)}>
+            { isAdmin && (
+                <Dialog open={openDelete} onClose={()=>setdeleteOpen(false)}>
                 <DialogTitle>
                     Delete Machine ID: {machine.name} ? 
                 </DialogTitle>
@@ -147,6 +150,8 @@ export default function ManageMachineView({ machine, docs }) {
                     </Button>
                 </DialogActions>
             </Dialog>
+                )}
+            
         </Box>
   
     )}
