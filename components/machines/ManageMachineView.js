@@ -22,6 +22,17 @@ export default function ManageMachineView({ machine, docs, isAdmin }) {
     const handleDelete = async () => {
         // Call your API to delete the machine
         //const response = await supabase.from('machines').delete().eq('id', machine.id);
+        
+        // for deletion of machines, make sure files delete in the storage bucket 
+        for (const doc of docs){
+            if(doc.file_url){
+                const path = decodeURIComponent(doc.file_url.split('/documents/')[1])
+                if(path){
+                    const {error} = await supabase.storage.from('documents').remove([path])
+                    if(error) console.error('Storage cleanup failed: ', error.message)
+                }   
+            }
+        }
         const {data, error}= await supabase.from('machines').delete().eq('id',machine.id).select()
         
         if (error){

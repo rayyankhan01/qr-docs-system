@@ -57,6 +57,16 @@ export default function EditMachineView({ machine, docs }) {
                 setMessage({ text: 'Error saving document: ' + updateError.message, type: 'error' });
                 return;
             }
+
+            // for filecleanup for files replace 
+            // for deletion of machines, make sure replaced files delete in the storage bucket 
+            if(doc.file_url){
+                const oldPath = decodeURIComponent(doc.file_url.split('/documents/')[1])
+                if(oldPath){
+                    await supabase.storage.from('documents').remove([oldPath])
+                }
+            }
+
         }
         setMessage({ text: 'Documents saved successfully', type: 'success' });
         router.refresh()
