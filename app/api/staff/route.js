@@ -15,9 +15,7 @@ export async function POST(request){
         return NextResponse.json({error:'Admin access required'}, {status:403})
     }
 
-
     const {staffId, password, role, name } = await request.json()
-
     if(!staffId || !password || !role || !name){
         return NextResponse.json({error:'Missing required fields'}, {status:400})
     }
@@ -49,5 +47,47 @@ export async function POST(request){
     }
 
     return NextResponse.json({message : 'Staff account created'})
+}
+
+export async function DELETE(request){
+    const supabase = await createClient()
+    const {data :{user}} = await supabase.auth.getUser()
+
+    if(!user){
+        return NextResponse.json({error:'Not authenticated'}, {status:401})
+    }
+
+    const {data:profile} = await supabase.from('profiles').select('role, is_super_admin').eq('id',user.id).single()
+    if(profile?.role !=='admin')
+    {
+        return NextResponse.json({error: "Admin access Required"},{status :403})
+    }
+    
+    const {id} = await request.json()
+    if(!id){
+        return NextResponse.json({error : "Missing Staff ID"},{status:400})
+    }
+    if(id ===user.id){
+        return NextResponse.json({error:'You cannot remove your own account'},{status:400})
+    }
+    const adminClient = createAdminClient()
+    const {data:targetProfile} = await adminClient.from('profiles').select('role').eq('id',id).single()
+
+    if(targetProfile?.role ==='admin' && !profile?.is_super_admin){
+        return NextResponse.json({error:'Only Super Admin can remove admin accounts'},{status:403})
+    }
+
+    const {error:deleteAuthError} = await adminClient.auth.admin.deleteUser(id)
+    if(deleteAuthError){
+        return NextResponse.json({error:deleteAuthError.message},{status:400})
+    }
+
+    const {error:deleteProfileError} = await adminClient.from('profiles').delete().eq('id',id)
+    if(deleteProfileError){
+        return NextResponse.json({error: deleteProfileError.message},{status:400})
+    }
+
+    return NextResponse.json({ message : 'Staff Acccount removed'})
+
 
 }

@@ -2,11 +2,14 @@
 
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
-import { Drawer, List, AppBar, Toolbar, Typography, Box, ListItemButton, ListItemIcon, ListItemText, Divider } from '@mui/material'
-import DashboardIcon from '@mui/icons-material/Dashboard'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Drawer, List, AppBar, Toolbar, Typography, Box, ListItemButton, Menu, MenuItem, Avatar,
+        ListItemIcon, ListItemText, Divider, IconButton } from '@mui/material'
+import DashboardIcon from '@mui/icons-material/Dashboard'
 import PrecisionManufacturingIcon from '@mui/icons-material/PrecisionManufacturing'
 import GroupIcon from '@mui/icons-material/Group'
+import {supabase} from '@/lib/supabase'
 
 const drawerWidth = 280
 
@@ -16,10 +19,19 @@ const navLinks = [
     { label: 'Staff', icon: GroupIcon, href: '/staff' },
 ]
 
-export default function DashboardLayout({ children, isAdmin }) {
+export default function DashboardLayout({ children, isAdmin, name ,role }) {
     const pathname = usePathname()
     const router = useRouter()
+    
     const visibleLinks = navLinks.filter(link=> link.href !== '/staff'||isAdmin)
+    const [anchorEl,setAnchorEl] = useState(null)
+
+    const handleLogout = async () =>{
+        await supabase.auth.signOut()
+        router.push('/login')
+        router.refresh()
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" >  {/*sx={{ zIndex: 1201, bgcolor: '#6B1E2A' }}*/}
@@ -30,6 +42,19 @@ export default function DashboardLayout({ children, isAdmin }) {
                     <Typography variant="body2" sx={{ ml: 1}}>
                         QR Code Management System
                     </Typography>
+                    <Box sx ={{flexGrow:1}}/>
+
+                    
+                    <IconButton onClick={(e)=>setAnchorEl(e.currentTarget)}>
+                        <Avatar sx = {{width:32, height:32, bgcolor:'gold.400',color : '#1a1a1a',border: '2px solid white'}}>
+                            {name?.[0]?.toUpperCase() || '?'}
+                        </Avatar>
+                    </IconButton>
+                    <Menu anchorEl={anchorEl} open ={Boolean(anchorEl)} onClose ={()=>setAnchorEl(null)}>
+                        <MenuItem>Hello, {name} ({role})</MenuItem>
+                        <Divider/>
+                        <MenuItem onClick={handleLogout}>Log out</MenuItem>
+                    </Menu>
                 </Toolbar>
             </AppBar>
 

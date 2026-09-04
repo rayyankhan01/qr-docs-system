@@ -38,7 +38,7 @@ export default function createStaffForm({isSuperAdmin}) {
 
 
     return(
-        <Box component='form' onSubmit={handleSubmit} sx={{display:'flex', flexDirection:'column', gap:2, width:'300px'}}>
+        <Box component='form' onSubmit={handleSubmit} sx={{display:'flex', flexDirection:'column', gap:2, width:'100%'}}>
             <TextField label ='Staff ID' name= 'staffId' value = {form.staffId} onChange = {handleChange} required/>
             <TextField label ='Password' name = 'password' type = 'password' value = {form.password} onChange = {handleChange} required/>
             <TextField label ='Name' name = 'name' value = {form.name} onChange = {handleChange} required/>

@@ -2,7 +2,7 @@ import {createClient} from '@/lib/supabaseServ'
 import StaffTable from '@/components/staff/StaffTable'
 import CreateStaffForm from '@/components/staff/CreateStaffForm'
 import {PageHeader, SectionCard} from '@/components/ui'
-import {Box} from '@mui/material'
+import {Box, Stack} from '@mui/material'
 import { redirect } from 'next/navigation'
 
 
@@ -20,12 +20,14 @@ export default async function StaffPage() {
     return (
         <Box>
             <PageHeader title='Staff Management' description='Manage staff members and their roles'/>
-            <SectionCard title ='Staff Members'>
+           <Box sx = {{display:'grid', gap:3,gridTemplateColumns:{xs:'1fr',md:'2fr 1fr'}}}>
+                <SectionCard title ='Staff Members'>
                 <StaffTable staff={staff} isSuperAdmin={currentProfile?.is_super_admin}/>
-            </SectionCard>
-              <SectionCard title = "Add Staff">
+                </SectionCard>
+                <SectionCard title = "Add Staff" >
                     {isAdmin && <CreateStaffForm isSuperAdmin={isSuperAdmin}/>}
                 </SectionCard>
+            </Box>
         </Box>
     )
 }

@@ -1,12 +1,14 @@
 'use client'
 
 import {useRouter} from 'next/navigation'
-import { Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem } from '@mui/material'
+import {Button, Table, TableHead, TableRow, TableCell, TableBody, Select, MenuItem, IconButton, DialogActions, Dialog, DialogContent, DialogTitle} from '@mui/material'
 import {supabase} from '@/lib/supabase'
+import { useState } from 'react'
+import DeleteIcon from '@mui/icons-material/Delete'
 const ROLES = ['admin','staff']
 export default function StaffTable ({staff, isSuperAdmin}) {
     const router = useRouter();
-
+    const [removeUser,setRemoveUser] = useState(null)
     const handleRoleChange = async (id,newRole)=>{
         const {error} = await supabase.from('profiles').update({role:newRole}).eq('id',id)
         if(error){
@@ -16,12 +18,32 @@ export default function StaffTable ({staff, isSuperAdmin}) {
         router.refresh()
     }
 
+    const handleRemove = async()=>{
+        const res = await fetch ('/api/staff',{
+            method:'DELETE',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({id:removeUser.id})
+        })
+        const data = await res.json()
+        if(!res.ok)
+        {
+            alert ('Error removing staff : '+ data.error)
+            setRemoveUser(null)
+            return
+        }
+        setRemoveUser(null)
+        router.refresh()
+    }
+
+
     return (
-        <Table>
+        <>
+          <Table>
             <TableHead>
                 <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell>Role</TableCell>
+                    <TableCell>Actions</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -37,9 +59,30 @@ export default function StaffTable ({staff, isSuperAdmin}) {
                                 </Select>
                             ):person.role}
                         </TableCell>
+                        <TableCell>
+                            <IconButton size = 'small' color = "error" onClick={()=> setRemoveUser(person)}>
+                                <DeleteIcon fontSize = "small"/>
+                            </IconButton>
+                        </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
         </Table>
+
+        <Dialog open ={Boolean(removeUser)} onClose ={()=>setRemoveUser(null)} >
+            <DialogTitle> Remove {removeUser?.name}?</DialogTitle>
+                <DialogContent>
+                    This will permanently delete their account and revoke their access. This cannot be undone.
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={()=> setRemoveUser(null)}>Cancel</Button>
+                    <Button variant ="contained" color= "error" onClick={handleRemove}>Remove</Button>
+                </DialogActions>
+           
+        </Dialog>
+        
+        
+        </>
+      
     )
 }
